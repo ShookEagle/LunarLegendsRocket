@@ -1,114 +1,100 @@
-# 🚀 **Raspberry Pi Modular Rocket System**
+# 🚀 **Modular Rocket Telemetry and Data Collection System**
 
-An innovative and modular rocket telemetry system designed for **data collection, GPS tracking, altitude monitoring, and video recording** using the **Raspberry Pi 4** and a suite of sensors. Built with a focus on modularity, clean code structure, and hardware integration.
+An advanced, modular rocket telemetry system designed for **data acquisition, real-time GPS tracking, altitude monitoring, and high-quality video recording**. Built with scalable hardware integration and robust software architecture, this system delivers **reliable, actionable data** for aerospace testing and analysis.
 
 ---
 
 ## 🌟 **Project Overview**
 
-This project demonstrates my ability to design and implement a **real-time hardware integration system** for rockets using a Raspberry Pi. The system handles **GPS tracking**, **altitude measurement**, **video recording** with a global shutter camera, and **communication** through a SIM module.
+Our system leverages the **Raspberry Pi 4** as its central processing unit, integrating high-performance sensors and communication modules to create an **end-to-end telemetry solution**. This technology provides:
 
-It is **fully modular**, meaning each hardware component operates independently within its own module. The code is clean, well-organized, and easily scalable.
+- **In-Flight Data Collection**: Altitude, motion sensing, and precise GPS tracking.  
+- **Global Shutter Video Recording**: High-quality, distortion-free video capture.  
+- **Post-Landing Communication**: Sends GPS coordinates via text message for location recovery.  
+
+### **Why It Matters**  
+Designed for **aerospace applications**, the system prioritizes modularity, accuracy, and scalability. Each component operates independently, ensuring seamless operation and maintainability for future enhancements.
 
 ---
 
 ## 🛠️ **Key Features**
 
-- **GPS Tracking**: Real-time location acquisition via NEO-M8J GPS module.
-- **Altitude Measurement**: High-precision altitude data using the Adafruit BMP388 sensor.
-- **Motion Sensing**: Gyroscope and accelerometer integration with the MPU6050.
-- **Video Recording**: High-quality video capture with the IMX296 color global shutter camera.
-- **SIM Communication**: Sends location coordinates post-landing via text message.
-- **Secure Startup**: Power system managed with a **key-operated switch**.
-- **Modular Codebase**: Each component has its own file, keeping the system scalable and maintainable.
+- **Real-Time GPS Tracking**: Accurate location data powered by the NEO-M8J GPS module.  
+- **Altitude and Environmental Monitoring**: High-precision altitude and temperature readings using the Adafruit BMP388 sensor.  
+- **Motion Sensing**: Accelerometer and gyroscope integration with the MPU6050 module.  
+- **Distortion-Free Video**: IMX296 Global Shutter Camera for 1080p, 60fps recording.  
+- **Post-Landing Location Recovery**: GPS coordinates transmitted via the SIM800L GSM module.  
+- **Secure Power Management**: A key-operated switch ensures controlled system startup.  
+- **Modular Codebase**: Designed with scalability in mind, each component is independently managed.  
 
 ---
 
-## 🔩 **Hardware Components**
+## 🔩 **System Components**
 
-| Component                     | Function                         |
-|-------------------------------|----------------------------------|
-| **Raspberry Pi 4 (8GB)**      | System processing and control    |
-| **IMX296 Color Global Shutter** | High-quality video recording    |
-| **Pololu U3V50F5**            | Stable 5V power conversion       |
-| **Adafruit BMP388**           | Altitude data (altimeter)        |
-| **SIM800L**                   | SIM-based text communication     |
-| **NEO-M8J-0 GPS**             | Real-time location tracking      |
-| **MPU6050**                   | Motion data: gyro + accelerometer|
-| **Adafruit Perma-Proto HAT**  | GPIO pin expansion and connections|
-| **Key Switch**                | Secure system startup            |
+| **Component**                 | **Purpose**                          |
+|-------------------------------|--------------------------------------|
+| **Raspberry Pi 4 (8GB)**      | Central processing and coordination  |
+| **IMX296 Global Shutter Camera** | High-quality video recording       |
+| **Pololu U3V50F5**            | Power stabilization (5V conversion)  |
+| **Adafruit BMP388**           | Altitude and temperature monitoring  |
+| **SIM800L**                   | GSM-based communication module       |
+| **NEO-M8J GPS Module**        | Real-time location tracking          |
+| **MPU6050**                   | Accelerometer and gyroscope data     |
+| **Adafruit Perma-Proto HAT**  | GPIO pin expansion for connections   |
+| **Key-Operated Switch**       | Secure system startup control        |
 
 ---
 
-## 🧩 **Modular Code Design**
+## 🎥 **Video Recording Excellence**  
 
-This project is built with modularity in mind. Each hardware component is implemented in its own file, making the system clean, scalable, and easy to debug.
+The **IMX296 Global Shutter Camera** provides:  
+- **Resolution**: 1080p (1.58 MP, color sensor)  
+- **Frame Rate**: 60 fps for smooth motion capture  
+- **Wide Field of View**: Customizable lenses achieve a **100° viewing angle**  
 
-```plaintext
-project/
-│
-├── main.py                 # Main controller (orchestrates all modules)
-│
-├── components/             # Modular components
-│   ├── gps.py              # Handles GPS data
-│   ├── bmp388.py           # Altitude and temperature readings
-│   ├── mpu6050.py          # Gyroscope/accelerometer readings
-│   ├── sim800l.py          # SIM module messaging
-│   ├── camera.py           # Video recording control
-│   └── power.py            # Power management logic
-│
-├── utils/                  # Utility scripts
-│   ├── localizer.py        # Centralized messaging system
-│   └── logger.py           # Logging setup for debugging
-│
-├── config/                 # Configuration settings
-│   └── settings.py         # Pin numbers, addresses, etc.
-│
-└── README.md               # Project documentation
-```
-Each module focuses on one task:
-- **gps.py:** Fetches and parses GPS coordinates.
-- **bmp388.py:** Reads altitude and temperature from BMP388.
-- **camera.py:** Controls the IMX296 global shutter camera.
-- **sim800l.py:** Manages SIM-based communication (e.g., sending GPS data after landing).
-- **power.py:** Manages power handling logic.
+This ensures high-quality, distortion-free recordings—critical for analyzing high-speed flight events.
 
-## 🎥 **Highlight: Camera Module**
-The IMX296 Global Shutter Camera enables high-quality video recording with:
-- **Resolution:** 1.58 MP (color sensor)
-- **Frame Rate:** 60 fps
-- **Wide-Angle Lens:** Captures a 100° field of view.
-
-This ensures distortion-free, high-speed video suitable for rocket launches.
+---
 
 ## 🖥️ **System Workflow**
-1. **Startup:** System powers up when the key switch is turned on.
-2. **Waiting for Launch:** The system initializes and monitors telemetry.
-3. **In Flight:** Collects real-time data (altitude, motion, location) and records video.
-4. **Post-Landing:**
-   - Sends GPS coordinates via the SIM800L module using text messages.
-   - Logs data for analysis.
 
-## 💡 **Technologies Used**
-- **Python:** Programming language for system control.
-- **Pigpio:** For managing GPIO pins and software UART.
-- **Adafruit Libraries:** For sensor communication and data handling.
-- **NMEA Parsing:** GPS data parsing using pynmea2.
+1. **Startup**: Controlled startup via a secure key-operated switch.  
+2. **Launch Detection**: Sensors initialize and monitor environmental data.  
+3. **In-Flight**:  
+   - Collects and records altitude, motion, and GPS data.  
+   - Simultaneously records high-speed, high-resolution video.  
+4. **Post-Landing**:  
+   - Sends precise landing GPS coordinates via a text message.  
+   - Logs all telemetry data for post-analysis.
 
-## 🚀 **Skills Demonstrated**
-- **Hardware Integration:** Connecting and configuring multiple sensors and modules.
-- **Modular Code Design:** Clean, scalable, and maintainable Python codebase.
-- **GPIO Control:** Effective use of Raspberry Pi GPIO pins for hardware communication.
-- **Power Management:** Implementing a secure startup system with a key switch.
-- **Data Handling:** Real-time sensor data acquisition, video recording, and post-processing.
+---
 
-## 🏆 **Why This Project Stands Out**
-This project showcases my ability to:
-- Combine software and hardware integration to solve a real-world problem.
-- Develop modular, maintainable, and clean code.
-- Integrate advanced hardware like the IMX296 global shutter camera.
-- Implement secure power management and communication systems.
+## 📊 **Scalable Design**  
 
-## 📧 **Contact**
-- **Name:** Reece DeAlmeida
-- **Email:** reece.dealmeida@yahoo.com
+Our modular architecture ensures easy integration of additional sensors, communication systems, or custom features. The system can be adapted for:
+
+- Aerospace prototyping  
+- Educational rocket launches  
+- Environmental data collection  
+- Real-time video telemetry systems  
+
+Each hardware module has an independent codebase, allowing for rapid scaling and future enhancements.
+
+---
+
+## 💡 **Technologies Leveraged**
+
+- **Python**: Fast, reliable system control and hardware communication.  
+- **Pigpio**: GPIO and UART management for sensor integration.  
+- **NMEA Parsing**: Efficient processing of GPS data.  
+- **Adafruit CircuitPython Libraries**: Simplifies sensor communication.  
+
+---
+
+## 📧 **Contact Information**
+
+For more information or partnership opportunities:
+
+- **Name**: Reece DeAlmeida  
+- **Email**: [reece.dealmeida@yahoo.com](mailto:reece.dealmeida@yahoo.com)  
+
