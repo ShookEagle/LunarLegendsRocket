@@ -19,10 +19,10 @@ def main():
     localizer = Localizer(language=LANGUAGE)
 
     # Print startup message
-    print(localizer.get_message("startup"))
+    localizer.print_localized("startup")
 
     # Simulated initialization of modules
-    print(localizer.get_message("gps_init"))
+    localizer.print_localized("gps_init")
 
     # Mocked data
     latitude, longitude = 37.7749, -122.4194
@@ -30,13 +30,13 @@ def main():
     temperature = 25.0
     landing_message = f"I have landed my position is {latitude}, {longitude}"
 
-    print(localizer.get_message("gps_data", lat=latitude, lon=longitude))
-    print(localizer.get_message("altitude_data", altitude=altitude))
-    print(localizer.get_message("temperature_data", temperature=temperature))
-    print(localizer.get_message("sim_message_sent", message=landing_message))
+    localizer.print_localized("gps_data", lat=latitude, lon=longitude)
+    localizer.print_localized("altitude_data", altitude=altitude)
+    localizer.print_localized("temperature_data", temperature=temperature)
+    localizer.print_localized("sim_message_sent", message=landing_message)
 
     # Shutdown
-    print(localizer.get_message("shutdown"))
+    localizer.print_localized("shutdown")
 
 if __name__ == "__main__":
     main()
