@@ -4,10 +4,10 @@ if sys.platform != "linux":
     print("⚠️ Running in mock mode: Hardware-specific libraries are mocked.")
     import fake_rpi
     import fake_rpi.RPi as RPi  # Mock RPi.GPIO
-    import fake_rpi.pigpio as pigpio  # Mock pigpio
     from unittest.mock import MagicMock
 
-    # Mock I2C and Camera
+    # Mock Libraries that are Unavailable
+    pigpio = MagicMock()
     SMBus = MagicMock()
     Picamera2 = MagicMock()
 
