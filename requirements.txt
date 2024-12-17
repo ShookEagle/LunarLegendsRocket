@@ -1,0 +1,12 @@
+# Mock Libraries for macOS Development
+fake-rpi             # Mocks Raspberry Pi GPIO and hardware features
+
+# Cross-Platform Libraries
+pynmea2              # GPS NMEA data parsing
+numpy                # Array and math processing
+adafruit-circuitpython-bmp3xx  # For BMP388 logic
+mpu6050-raspberrypi  # MPU6050 Gyroscope/Accelerometer logic
+
+# Development Tools
+pytest               # For unit testing
+flake8               # Linter for Python code
