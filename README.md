@@ -1,4 +1,4 @@
-# 🚀 **Modular Rocket Telemetry and Data Collection System**
+# 🚀 **Rocket Telemetry and Video Recording System**
 
 An advanced, modular rocket telemetry system designed for **data acquisition, real-time GPS tracking, altitude monitoring, and high-quality video recording**. Built with scalable hardware integration and robust software architecture, this system delivers **reliable, actionable data** for aerospace testing and analysis.
 
