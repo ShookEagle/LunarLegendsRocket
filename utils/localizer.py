@@ -1,34 +1,24 @@
 import json
 import os
-from config.settings import LOCALE_PATH
+from config.settings import LANG_PATH
+
+
+def load_language_file(language):
+    file_path = os.path.join(LANG_PATH, f"{language}.json")
+    with open(file_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+
 
 class Localizer:
     def __init__(self, language="en"):
         self.language = language
-        self.messages = self.load_language_file(language)
+        self.locale = load_language_file(language)
 
-    def load_language_file(self, language):
-        """
-        Load the JSON file for the specified language.
-        """
-        file_path = os.path.join(LOCALE_PATH, f"{language}.json")
-        try:
-            with open(file_path, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except FileNotFoundError:
-            print(f"Localization file for '{language}' not found. Falling back to English.")
-            return self.load_language_file("en")
-        except json.JSONDecodeError as e:
-            print(f"Error decoding localization file: {e}")
-            return {}
+    def print_local(self, key, **kwargs):
+        localized_message = self.locale.get(key, f"Missing message for key: {key}")
+        print(localized_message.format(**kwargs))
 
-    def get_message(self, local, **kwargs):
-        """
-        Retrieve the localized message for the given key and format with kwargs.
-        """
-        template = self.messages.get(local, f"Missing message for key: {local}")
-        return template.format(**kwargs)
-
-    def print_localized(self, local, **kwargs):
-        template = self.messages.get(local, f"Missing message for key: {local}")
-        print(template.format(**kwargs))
+    def print_local_error(self, key, **kwargs):
+        localized_message = self.locale.get(key, f"Missing message for key: {key}")
+        error_message = localized_message.replace("%error%", self.locale.get("error"))
+        print(error_message.format(**kwargs))

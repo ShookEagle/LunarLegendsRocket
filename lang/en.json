@@ -1,0 +1,6 @@
+{
+  "startup": "System initializing...",
+  "shutdown": "System shutting down...",
+  "error": "ERROR: ",
+  "error.bad_startup": "%error%Flight Controller did not start up properly. System shutting down..."
+}
