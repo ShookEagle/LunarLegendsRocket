@@ -1,6 +1,9 @@
 {
   "startup": "System initializing...",
+  "waiting_for_launch": "Waiting for launch",
   "shutdown": "System shutting down...",
-  "error": "ERROR: ",
+  "camera.buffering": "Cameras buffering in memory...",
+  "camera.started": "Recording started for both cameras.",
+  "camera.stopped": "Recording stopped.",
   "error.bad_startup": "%error%Flight Controller did not start up properly. System shutting down..."
 }
