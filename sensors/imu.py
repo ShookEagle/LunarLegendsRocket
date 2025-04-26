@@ -1,115 +1,78 @@
-import json
-import math
-import time
-
 import mpu6050
+import time
+import math
 
 class IMU:
     def __init__(self, address):
         self.address = address
         self.mpu = mpu6050.mpu6050(address)
 
-        self.attitude_corrector = AttitudeCorrector()
         self.gyro_bias = {'x': 0, 'y': 0, 'z': 0}
+        self.calibrate_gyro()
 
-        self.calibrate_imu()
-
-    def calibrate_imu(self, samples=100):
-        accel_sum = {'x': 0, 'y': 0, 'z': 0}
+    def calibrate_gyro(self, samples=100):
+        """
+        Calibrates gyroscope biases while stationary.
+        """
+        print("[IMU] Calibrating gyroscope bias... Please keep rocket still.")
         gyro_sum = {'x': 0, 'y': 0, 'z': 0}
 
-        print("[IMU] Calibrating... Please keep rocket still.")
-
         for _ in range(samples):
-            accel = self.mpu.get_accel_data()
             gyro = self.mpu.get_gyro_data()
-
             for axis in ['x', 'y', 'z']:
-                accel_sum[axis] += accel[axis]
                 gyro_sum[axis] += gyro[axis]
-
             time.sleep(0.01)
 
-        # Average
-        accel_avg = {k: v / samples for k, v in accel_sum.items()}
-        gyro_avg = {k: v / samples for k, v in gyro_sum.items()}
-
-        self.attitude_corrector.calibrate(accel_avg)
-        self.gyro_bias = gyro_avg
-
-        print("[IMU] Calibration complete.")
+        self.gyro_bias = {k: v / samples for k, v in gyro_sum.items()}
+        print(f"[IMU] Gyro bias: {self.gyro_bias}")
 
     def read_acceleration(self):
-        raw = self.mpu.get_accel_data()
-        rotated = self.attitude_corrector.apply(raw)
-        return rotated
+        """
+        Returns raw acceleration dict: x, y, z in m/s²
+        """
+        return self.mpu.get_accel_data()
 
     def read_gyro(self):
+        """
+        Returns bias-corrected gyro dict: x, y, z in degrees/sec
+        """
         raw = self.mpu.get_gyro_data()
         corrected = {
-            axis: raw[axis] - self.gyro_bias[axis] for axis in ['x', 'y', 'z']
+            axis: raw[axis] - self.gyro_bias[axis]
+            for axis in ['x', 'y', 'z']
         }
         return corrected
 
     def read_imu_temp(self):
+        """
+        Returns temperature in °C
+        """
         return self.mpu.get_temp()
 
+    def calculate_tilt(self, accel=None):
+        """
+        Calculates tilt angle from current accelerometer reading.
+        Returns tilt angle in degrees relative to +Y axis (up).
+        """
+        if accel is None:
+            accel = self.read_acceleration()
 
-class AttitudeCorrector:
-    def __init__(self):
-        self.rotation_matrix = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]  # Identity until calibrated
+        # Define your "up" vector: positive Y axis
+        up_vector = [0.0, 9.8, 0.0]
+        measured_vector = [accel['x'], accel['y'], accel['z']]
 
-    def calibrate(self, measured_gravity):
-        # Target vector (what we want gravity to point to)
-        target = [0.0, 9.8, 0.0]  # Because Y axis is vertical!
+        # Normalize vectors
+        up_norm = math.sqrt(sum(u**2 for u in up_vector))
+        measured_norm = math.sqrt(sum(m**2 for m in measured_vector))
 
-        # Normalize both vectors
-        g = self._normalize([
-            measured_gravity['x'],
-            measured_gravity['y'],
-            measured_gravity['z']
-        ])
-        t = self._normalize(target)
+        if measured_norm == 0:
+            return 0.0
 
-        # Calculate rotation axis (cross product)
-        axis = [
-            g[1] * t[2] - g[2] * t[1],
-            g[2] * t[0] - g[0] * t[2],
-            g[0] * t[1] - g[1] * t[0]
-        ]
+        # Dot product
+        dot = sum(measured_vector[i] * up_vector[i] for i in range(3))
 
-        axis_norm = math.sqrt(sum(a ** 2 for a in axis))
-        if axis_norm == 0:
-            self.rotation_matrix = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]  # No rotation needed
-            return
+        # Angle in radians → degrees
+        angle_rad = math.acos(dot / (measured_norm * up_norm))
+        angle_deg = math.degrees(angle_rad)
 
-        axis = [a / axis_norm for a in axis]
-
-        # Calculate rotation angle (dot product then arccos)
-        dot = sum(g[i] * t[i] for i in range(3))
-        angle = math.acos(dot)
-
-        self.rotation_matrix = self._rotation_matrix(axis, angle)
-
-    def apply(self, vector):
-        # Apply rotation matrix to vector
-        return {
-            'x': sum(self.rotation_matrix[0][i] * vector[axis] for i, axis in enumerate(['x', 'y', 'z'])),
-            'y': sum(self.rotation_matrix[1][i] * vector[axis] for i, axis in enumerate(['x', 'y', 'z'])),
-            'z': sum(self.rotation_matrix[2][i] * vector[axis] for i, axis in enumerate(['x', 'y', 'z'])),
-        }
-
-    def _normalize(self, v):
-        norm = math.sqrt(sum(x ** 2 for x in v))
-        return [x / norm for x in v]
-
-    def _rotation_matrix(self, axis, theta):
-        # Rodrigues' rotation formula
-        a = math.cos(theta)
-        b = math.sin(theta)
-        x, y, z = axis
-        return [
-            [a + (1 - a) * x * x, (1 - a) * x * y - b * z, (1 - a) * x * z + b * y],
-            [(1 - a) * y * x + b * z, a + (1 - a) * y * y, (1 - a) * y * z - b * x],
-            [(1 - a) * z * x - b * y, (1 - a) * z * y + b * x, a + (1 - a) * z * z]
-        ]
+        return angle_deg
