@@ -8,14 +8,14 @@ from camera.dual_camera import PrebufferedRecorder
 from communication.sim_module import SimModule
 
 # === Config ===
-LAUNCH_ACCEL_THRESHOLD = 3.0    # m/s²
-LANDING_ACCEL_THRESHOLD = 3.0    # m/s² (low + stable)
+LAUNCH_ACCEL_THRESHOLD = 3.0      # m/s²
+LANDING_ACCEL_THRESHOLD = 9.0     # m/s² (low + stable)
 LANDING_STABLE_SECONDS = 20.0     # time below threshold
 
 print("[System] Booted — initializing sensors")
 imu = IMU(0x68)
 bmp = Altimeter()
-gps = BitBangGPS(gpio_pin=17)
+gps = BitBangGPS(gpio_pin=18)
 sim = SimModule()
 logger = FlightLogger(imu=imu, bmp=bmp)
 camera = PrebufferedRecorder()
@@ -29,10 +29,11 @@ sim.send_message("[System] Camera prebuffering... Waiting for launch")
 
 while True:
     accel = imu.read_acceleration()
-    total_accel = (accel["x"]**2 + accel["y"]**2 + accel["z"]**2)**0.5
+    vertical_accel = accel['y']
+    net_vertical_accel = vertical_accel - 9.8
 
-    if total_accel > LAUNCH_ACCEL_THRESHOLD:
-        print(f"[Launch] Detected at {total_accel:.2f} m/s²")
+    if net_vertical_accel > LAUNCH_ACCEL_THRESHOLD:
+        print(f"[Launch] Detected at {net_vertical_accel:.2f} m/s²")
         camera.trigger_save()
         camera.continue_recording()
         logger.start()
@@ -50,7 +51,7 @@ try:
         accel = imu.read_acceleration()
         total_accel = (accel["x"]**2 + accel["y"]**2 + accel["z"]**2)**0.5
 
-        if (total_accel < LANDING_ACCEL_THRESHOLD) and (bmp.read_altitude() < LAUNCH_ALTITUDE + 50):
+        if (total_accel > LANDING_ACCEL_THRESHOLD) and (bmp.read_altitude() < LAUNCH_ALTITUDE + 50):
             if stable_start is None:
                 stable_start = time.time()
             elif time.time() - stable_start >= LANDING_STABLE_SECONDS:
