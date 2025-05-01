@@ -49,7 +49,7 @@ class FlightLogger:
                     "seconds": time.time() - self.start_time,
                     "altitude": self.bmp.read_altitude(),
                     "pressure": self.bmp.read_pressure(),
-                    "bmp_temp": self.bmp.read_bmp_temp(),
+                    "bmp_temp": self.bmp.read_bmp_temperature(),
                     "imu_temp": self.imu.read_imu_temp(),
                     "gyro_x": self.imu.read_gyro()["x"],
                     "gyro_y": self.imu.read_gyro()["y"],

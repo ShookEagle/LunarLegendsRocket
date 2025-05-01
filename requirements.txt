@@ -1,6 +1,4 @@
 pigpio~=1.78
 pynmea2~=1.19.0
-opencv-python~=4.11.0.86
-picamera2~=0.3.25
 mpu6050-raspberrypi
 smbus2~=0.5.0
