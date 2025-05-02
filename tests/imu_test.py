@@ -2,20 +2,21 @@ import sys
 import os
 import time
 
-from sensors.imu import IMU
+from sensors.imu import Altimeter
 
 # Initialize the IMU
-imu = IMU(0x68)
+imu = Altimeter()
 
-print("\n[IMU Test] Starting data readout... (Press Ctrl+C to stop)")
 
 try:
     while True:
-        accel = imu.read_acceleration()
+        accel = imu.read_accel()
         gyro = imu.read_gyro()
+        temperature = imu.read_inu_temperature()
 
-        print(f"[Accel] x={accel['x']:.2f} m/s², y={accel['y']:.2f} m/s², z={accel['z']:.2f} m/s²")
-        print(f"[Gyro]  x={gyro['x']:.2f} °/s, y={gyro['y']:.2f} °/s, z={gyro['z']:.2f} °/s")
+        print(f"[Accel] x={accel[0]:.2f} m/s², y={accel[1]:.2f} m/s², z={accel[2]:.2f} m/s²")
+        print(f"[Gyro]  x={gyro[0]:.2f} °/s, y={gyro[1]:.2f} °/s, z={gyro[2]:.2f} °/s")
+        print (f"[Temperature] {temperature} deg C")
         print("-------------------------------------------------------------")
         time.sleep(0.5)
 

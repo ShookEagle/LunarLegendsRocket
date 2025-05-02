@@ -1,15 +1,19 @@
-from sensors.gps import BitBangGPS
+import serial
+import time
 
-gps = BitBangGPS(gpio_pin=18)
+ser = serial.Serial("/dev/ttyAMA1", 9600, timeout=1)
+
+print("Starting GPS read loop...\n")
 
 try:
-    print("[GPS Test] Waiting for fix...")
-    lat, lon = gps.read(timeout=10)
-
-    if lat is not None and lon is not None:
-        print(f"[GPS Test] Latitude: {lat:.6f}, Longitude: {lon:.6f}")
-    else:
-        print("[GPS Test] No GPS fix within timeout")
-
+    while True:
+        line = ser.readline()
+        if line:
+            print(">>", line.decode(errors="ignore").strip())
+        else:
+            print("...waiting...")
+        time.sleep(1)
+except KeyboardInterrupt:
+    print("\nStopped.")
 finally:
-    gps.close()
+    ser.close()
