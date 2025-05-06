@@ -7,8 +7,8 @@ from camera.dual_camera import PrebufferedRecorder
 from communication.sim_module import SimModule
 
 # === Config ===
-LAUNCH_ACCEL_THRESHOLD = 3.0      # m/s²
-LANDING_ACCEL_THRESHOLD = 9.0     # m/s² (low + stable)
+LAUNCH_ACCEL_THRESHOLD = 6.0      # m/s²
+LANDING_ACCEL_THRESHOLD = 2.0     # m/s² (low + stable)
 LANDING_STABLE_SECONDS = 20.0     # time below threshold
 
 print("[System] Booted — initializing sensors")
@@ -28,8 +28,8 @@ sim.send_message("[System] Camera prebuffering... Waiting for launch")
 
 while True:
     accel = imu.read_accel()
-    vertical_accel = accel['y']
-    net_vertical_accel = vertical_accel - 9.8
+    vertical_accel = accel[1]
+    net_vertical_accel = abs(vertical_accel - 9.8)
 
     if net_vertical_accel > LAUNCH_ACCEL_THRESHOLD:
         print(f"[Launch] Detected at {net_vertical_accel:.2f} m/s²")
@@ -48,7 +48,7 @@ stable_start = None
 try:
     while True:
         accel = imu.read_accel()
-        total_accel = (accel["x"]**2 + accel["y"]**2 + accel["z"]**2)**0.5
+        total_accel = (accel[0]**2 + accel[1]**2 + accel[2]**2)**0.5
 
         if (total_accel > LANDING_ACCEL_THRESHOLD) and (bmp.read_altitude() < LAUNCH_ALTITUDE + 50):
             if stable_start is None:
