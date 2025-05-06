@@ -50,13 +50,13 @@ class FlightLogger:
                     "altitude": self.bmp.read_altitude(),
                     "pressure": self.bmp.read_pressure(),
                     "bmp_temp": self.bmp.read_bmp_temperature(),
-                    "imu_temp": self.imu.read_imu_temp(),
-                    "gyro_x": self.imu.read_gyro()["x"],
-                    "gyro_y": self.imu.read_gyro()["y"],
-                    "gyro_z": self.imu.read_gyro()["z"],
-                    "accel_x": self.imu.read_acceleration()["x"],
-                    "accel_y": self.imu.read_acceleration()["y"],
-                    "accel_z": self.imu.read_acceleration()["z"],
+                    "imu_temp": self.imu.read_imu_temperature(),
+                    "gyro_x": self.imu.read_gyro()[0],
+                    "gyro_y": self.imu.read_gyro()[1],
+                    "gyro_z": self.imu.read_gyro()[2],
+                    "accel_x": self.imu.read_accel()[0],
+                    "accel_y": self.imu.read_accel()[1],
+                    "accel_z": self.imu.read_accel()[2],
                 }
 
                 self.queue.put(data)
