@@ -2,7 +2,7 @@ import board
 import adafruit_mpu6050
 
 
-class Altimeter:
+class IMU:
     def __init__(self):
         i2c = board.I2C()
         self.imu = adafruit_mpu6050.MPU6050(i2c)
