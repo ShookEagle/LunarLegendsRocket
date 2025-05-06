@@ -2,8 +2,8 @@ import serial
 import pynmea2
 
 class GPS:
-    def __init__(self, port="/dev/ttyAMA3", baudrate=9600, timeout=1):
-        self.ser = serial.Serial(port, baudrate=baudrate, timeout=timeout)
+    def __init__(self):
+        self.ser = serial.Serial(port="/dev/ttyAMA3", baudrate=9600, timeout=1)
 
     def read(self):
         while True:
