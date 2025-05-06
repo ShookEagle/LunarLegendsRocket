@@ -1,19 +1,20 @@
 import serial
 import time
 
-ser = serial.Serial("/dev/ttyAMA1", 9600, timeout=1)
+# Configure the serial connection
+ser = serial.Serial(
+    port='/dev/ttyAMA3',      # Replace with your serial port
+    baudrate=9600,
+    timeout=1                 # Timeout in seconds
+)
 
-print("Starting GPS read loop...\n")
-
+# Continuous read loop
 try:
     while True:
-        line = ser.readline()
-        if line:
-            print(">>", line.decode(errors="ignore").strip())
-        else:
-            print("...waiting...")
-        time.sleep(1)
+        if ser.in_waiting > 0:
+            line = ser.readline().decode('utf-8', errors='replace').strip()
+            print(line)
+        time.sleep(0.1)  # Small delay to prevent high CPU usage
 except KeyboardInterrupt:
-    print("\nStopped.")
-finally:
+    print("Exiting...")
     ser.close()
