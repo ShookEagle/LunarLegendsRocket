@@ -11,7 +11,7 @@ class PrebufferedRecorder:
         self.output_path = output_path
 
         self.picam = Picamera2()
-        video_config = self.picam.create_video_configuration(main={"size": (1400, 1080)})
+        video_config = self.picam.create_video_configuration(main={"size": (1440, 1080)})
         self.picam.configure(video_config)
 
         self.buffer = deque(maxlen=int(buffer_seconds * fps))
