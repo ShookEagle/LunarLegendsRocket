@@ -10,7 +10,7 @@ class IMU:
     def read_gyro(self):
         return self.imu.gyro
 
-    def read_inu_temperature(self):
+    def read_imu_temperature(self):
         return self.imu.temperature
 
     def read_accel(self):
