@@ -1,5 +1,4 @@
 import time
-import RPi.GPIO as GPIO
 from sensors.bmp import Altimeter
 from sensors.imu import IMU
 from sensors.gps import BitBangGPS

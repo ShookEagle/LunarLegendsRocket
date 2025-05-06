@@ -31,17 +31,17 @@ Designed for **aerospace applications**, the system prioritizes modularity, accu
 
 ## 🔩 **System Components**
 
-| **Component**                 | **Purpose**                          |
-|-------------------------------|--------------------------------------|
-| **Raspberry Pi 4 (8GB)**      | Central processing and coordination  |
+| **Component**                    | **Purpose**                          |
+|----------------------------------|--------------------------------------|
+| **Raspberry Pi 5 (8GB)**         | Central processing and coordination  |
 | **IMX296 Global Shutter Camera** | High-quality video recording       |
-| **Pololu U3V50F5**            | Power stabilization (5V conversion)  |
-| **Adafruit BMP388**           | Altitude and temperature monitoring  |
-| **SIM800L**                   | GSM-based communication module       |
-| **NEO-M8J GPS Module**        | Real-time location tracking          |
-| **MPU6050**                   | Accelerometer and gyroscope data     |
-| **Adafruit Perma-Proto HAT**  | GPIO pin expansion for connections   |
-| **Key-Operated Switch**       | Secure system startup control        |
+| **Pololu U3V50F5**               | Power stabilization (5V conversion)  |
+| **Adafruit BMP390**              | Altitude and temperature monitoring  |
+| **SIM800L**                      | GSM-based communication module       |
+| **NEO-M6 GPS Module**            | Real-time location tracking          |
+| **MPU6050**                      | Accelerometer and gyroscope data     |
+| **Adafruit Perma-Proto HAT**     | GPIO pin expansion for connections   |
+| **Key-Operated Switch**          | Secure system startup control        |
 
 ---
 
@@ -50,7 +50,7 @@ Designed for **aerospace applications**, the system prioritizes modularity, accu
 The **IMX296 Global Shutter Camera** provides:  
 - **Resolution**: 1080p (1.58 MP, color sensor)  
 - **Frame Rate**: 60 fps for smooth motion capture  
-- **Wide Field of View**: Customizable lenses achieve a **100° viewing angle**  
+- **Wide Field of View**: Customizable lenses achieve a **120° viewing angle**  
 
 This ensures high-quality, distortion-free recordings—critical for analyzing high-speed flight events.
 
