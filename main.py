@@ -2,6 +2,7 @@ import time
 from sensors.bmp import Altimeter
 from sensors.imu import IMU
 from sensors.gps import GPS
+from extras.fuse import Fuse
 from data.logger import FlightLogger
 from camera.dual_camera import PrebufferedRecorder
 from communication.sim_module import SimModule
@@ -15,12 +16,16 @@ print("[System] Booted — initializing sensors")
 imu = IMU()
 bmp = Altimeter()
 gps = GPS()
+fuse = Fuse()
 sim = SimModule()
 logger = FlightLogger(imu=imu, bmp=bmp)
 camera = PrebufferedRecorder()
 camera.start()
 
+
+# === DATA ===
 LAUNCH_ALTITUDE = bmp.read_altitude()
+APOGEE_ALTITUDE = 0
 
 # === Wait for launch ===
 print("[System] Camera prebuffering... Waiting for launch")
@@ -40,9 +45,20 @@ while True:
 
     time.sleep(0.01)
 
-# === Flight Phase ===
-print("[System] In flight... Monitoring for landing")
+# === Wait for Apogee ===
+print("[System] In flight... Monitoring for apogee")
 
+while True:
+    if APOGEE_ALTITUDE < bmp.read_altitude():
+        APOGEE_ALTITUDE = bmp.read_altitude()
+
+    if APOGEE_ALTITUDE > bmp.read_altitude() + 50:
+        fuse.trigger()
+        break
+
+    time.sleep(0.01)
+
+# === Wait for Landing ===
 stable_start = None
 
 try:
@@ -50,7 +66,7 @@ try:
         accel = imu.read_accel()
         total_accel = (accel[0]**2 + accel[1]**2 + accel[2]**2)**0.5
 
-        if (total_accel > LANDING_ACCEL_THRESHOLD) and (bmp.read_altitude() < LAUNCH_ALTITUDE + 50):
+        if (total_accel-9.8 < LANDING_ACCEL_THRESHOLD) and (bmp.read_altitude() < LAUNCH_ALTITUDE + 50):
             if stable_start is None:
                 stable_start = time.time()
             elif time.time() - stable_start >= LANDING_STABLE_SECONDS:
@@ -61,7 +77,8 @@ try:
 
         time.sleep(0.05)
 
-    # === Post-landing ===
+
+# === Post-landing ===
     print("[System] Recording 20s post-landing...")
     sim.send_message(f"LANDED: I am at {gps.read()}")
     time.sleep(20)
